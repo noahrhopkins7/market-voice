@@ -38,3 +38,7 @@ Thumbs.db
 .vscode/*
 !.vscode/settings.json
 public/
+
+# Artwork source: the original stays local; only the cropped
+# assets/cover.jpg is committed and published as the podcast tile.
+cover-source.*
