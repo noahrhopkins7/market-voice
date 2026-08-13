@@ -5,14 +5,15 @@
     <link>https://noahrhopkins7.github.io/market-voice/f/5e86b3fb3d/feed.xml</link>
     <description>Daily pre-market briefing. Every figure is fetched, not recalled.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 13 Aug 2026 04:10:45 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 13 Aug 2026 04:15:27 +0000</lastBuildDate>
     <itunes:author>Noah Hopkins</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Business"/>
     <itunes:type>episodic</itunes:type>
+    <itunes:image href="https://noahrhopkins7.github.io/market-voice/f/5e86b3fb3d/cover.jpg"/>
     <item>
       <title>Pre-market briefing — 2026-08-12</title>
-      <pubDate>Thu, 13 Aug 2026 04:10:45 +0000</pubDate>
+      <pubDate>Thu, 13 Aug 2026 04:15:27 +0000</pubDate>
       <guid isPermaLink="false">market-voice-2026-08-12</guid>
       <enclosure url="https://noahrhopkins7.github.io/market-voice/f/5e86b3fb3d/episodes/brief-2026-08-12.mp3" length="7230572" type="audio/mpeg"/>
       <itunes:duration>00:15:04</itunes:duration>
