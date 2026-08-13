@@ -3,9 +3,14 @@
     python -m src.publish --local          # build ./public, touch no git
     python -m src.publish --push           # also commit to the gh-pages branch
 
-Privacy is by unguessable URL (SPEC.md §7): the feed lives at
-/f/<FEED_TOKEN>/feed.xml. That is obscurity, not security — anyone with the URL
-has the feed forever, so don't treat it as access control.
+The feed lives at /f/<FEED_TOKEN>/feed.xml. SPEC.md §7 intended that path as
+obscurity — never as access control — and with the repository public it does not
+even provide obscurity: the token is visible to anyone who browses gh-pages.
+
+Treat everything published here as public: the audio, the show notes, and the
+market commentary in them. If this feed ever needs to be genuinely private, the
+hosting has to change (a private repo on a paid plan, or a host outside GitHub);
+lengthening the token would accomplish nothing.
 
 Episodes older than PRUNE_DAYS are dropped from both the manifest and disk, and
 the feed is rewritten from scratch each run. Without that the repo grows without
@@ -159,6 +164,25 @@ def build_feed(episodes: list[dict], config: dict) -> str:
       <description><![CDATA[{episode.get('description_html', '')}]]></description>
     </item>""")
 
+    # Artwork: emitted only when cover.jpg actually exists, so the feed never
+    # points at a 404.
+    artwork = ""
+    if config.get("has_artwork"):
+        artwork = f'\n    <itunes:image href="{xml_escape(feed_dir)}/cover.jpg"/>'
+
+    # itunes:owner carries an email address in clear text. Apple requires it to
+    # verify ownership when submitting to the *directory*, but not for a feed
+    # added by URL — and this feed is served from a public repo, where the
+    # address would be harvestable. Opt in with FEED_PUBLISH_OWNER_EMAIL=1.
+    owner = ""
+    if config.get("owner_email"):
+        owner = (
+            f"\n    <itunes:owner>"
+            f"<itunes:name>{xml_escape(config['author'])}</itunes:name>"
+            f"<itunes:email>{xml_escape(config['owner_email'])}</itunes:email>"
+            f"</itunes:owner>"
+        )
+
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
@@ -170,7 +194,7 @@ def build_feed(episodes: list[dict], config: dict) -> str:
     <itunes:author>{xml_escape(config['author'])}</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:category text="Business"/>
-    <itunes:type>episodic</itunes:type>
+    <itunes:type>episodic</itunes:type>{artwork}{owner}
 {chr(10).join(items)}
   </channel>
 </rss>
@@ -227,6 +251,14 @@ def publish(config: dict, public_dir: Path = PUBLIC_DIR) -> Path:
     trading_day = config["trading_day"]
     filename = f"brief-{trading_day}.mp3"
     shutil.copy2(episode_src, episodes_dir / filename)
+
+    artwork_src = Path(config.get("artwork", ""))
+    config["has_artwork"] = artwork_src.is_file()
+    if config["has_artwork"]:
+        shutil.copy2(artwork_src, feed_dir / "cover.jpg")
+    else:
+        log.warning("no artwork at %s — podcast apps will show a blank tile",
+                    artwork_src)
 
     report_path = DATA_DIR / "report.md"
     description = markdown_to_html(report_path.read_text()) if report_path.exists() else ""
@@ -311,6 +343,10 @@ def build_config(trading_day: str) -> dict:
     return {
         "token": token,
         "base_url": base_url,
+        # Only published when FEED_PUBLISH_OWNER_EMAIL=1 — see build_feed.
+        "owner_email": (os.getenv("FEED_OWNER_EMAIL")
+                        if os.getenv("FEED_PUBLISH_OWNER_EMAIL") == "1" else None),
+        "artwork": os.getenv("FEED_ARTWORK", str(ROOT / "assets" / "cover.jpg")),
         "title": os.getenv("FEED_TITLE", "Morning Market Briefing"),
         "author": os.getenv("FEED_AUTHOR", "Market Voice"),
         "description": os.getenv(
