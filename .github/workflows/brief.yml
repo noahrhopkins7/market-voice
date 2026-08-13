@@ -1,0 +1,82 @@
+name: brief
+
+# GitHub Actions cron is UTC and does not observe daylight saving, so both
+# entries are needed: 10:15 UTC is 06:15 EDT (summer) and 11:15 UTC is 06:15 EST
+# (winter). Exactly one of them lands inside the 06:00-06:59 ET window on any
+# given date; the guard inside src/run.py makes the other a clean no-op.
+#
+# GitHub's scheduler is best-effort and can drift 5-20 minutes under load. A
+# 6:15 nominal start leaves room for that drift plus a ~9 minute pipeline
+# against the 6:50 ET publish target.
+on:
+  schedule:
+    - cron: '15 10 * * 1-5'   # 06:15 EDT
+    - cron: '15 11 * * 1-5'   # 06:15 EST
+  workflow_dispatch:           # manual runs — you will want these constantly
+
+concurrency:
+  # Never let two briefings race for the same gh-pages commit.
+  group: brief
+  cancel-in-progress: false
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write   # push the built feed to gh-pages
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      # ffmpeg does the chunk concatenation and 64kbps mono encode.
+      # pydub is not used — it needs the stdlib audioop module, removed in 3.13.
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Bring the existing feed forward so pruning and the manifest see history.
+      - name: Fetch existing gh-pages content
+        run: |
+          git fetch origin gh-pages --depth=1 || echo "no gh-pages branch yet"
+          git checkout origin/gh-pages -- public 2>/dev/null || echo "no public/ yet"
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run the pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY:    ${{ secrets.OPENAI_API_KEY }}
+          FINNHUB_API_KEY:   ${{ secrets.FINNHUB_API_KEY }}
+          FRED_API_KEY:      ${{ secrets.FRED_API_KEY }}
+          FEED_TOKEN:        ${{ secrets.FEED_TOKEN }}
+          FEED_BASE_URL:     ${{ secrets.FEED_BASE_URL }}
+        run: python -m src.run --verbose
+
+      # Kept even on failure: costs.jsonl and the rejection log are how you
+      # diagnose a bad morning after the fact.
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-${{ github.run_id }}
+          path: |
+            data/market_data.json
+            data/report.md
+            data/script.txt
+            data/costs.jsonl
+            data/validation_rejections.jsonl
+          retention-days: 14
+          if-no-files-found: ignore

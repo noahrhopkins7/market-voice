@@ -1,0 +1,1 @@
+"""Morning market briefing pipeline."""

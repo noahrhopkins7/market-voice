@@ -1,0 +1,1397 @@
+{
+  "meta": {
+    "generated_at_utc": "2026-08-13T02:38:46Z",
+    "generated_at_et": "2026-08-12 22:38:46 EDT",
+    "trading_day": "2026-08-12",
+    "prior_session": "2026-08-11",
+    "session_phase": "pre-market",
+    "is_nyse_holiday": false,
+    "schema_version": "1.0"
+  },
+  "fetch_errors": [],
+  "us_futures": [
+    {
+      "symbol": "ES=F",
+      "name": "S&P 500 futures",
+      "last": {
+        "value": 7771.0,
+        "display": "7,771.00"
+      },
+      "change_pct": {
+        "value": 0.30332365279122087,
+        "display": "+0.30%"
+      },
+      "change_pts": {
+        "value": 23.5,
+        "display": "+23.50"
+      }
+    },
+    {
+      "symbol": "NQ=F",
+      "name": "Nasdaq 100 futures",
+      "last": {
+        "value": 29862.0,
+        "display": "29,862.00"
+      },
+      "change_pct": {
+        "value": 0.7965975832039396,
+        "display": "+0.80%"
+      },
+      "change_pts": {
+        "value": 236.0,
+        "display": "+236.00"
+      }
+    },
+    {
+      "symbol": "YM=F",
+      "name": "Dow futures",
+      "last": {
+        "value": 53828.0,
+        "display": "53,828.00"
+      },
+      "change_pct": {
+        "value": -0.09651076466221653,
+        "display": "-0.10%"
+      },
+      "change_pts": {
+        "value": -52.0,
+        "display": "-52.00"
+      }
+    },
+    {
+      "symbol": "RTY=F",
+      "name": "Russell 2000 futures",
+      "last": {
+        "value": 3055.89990234375,
+        "display": "3,055.90"
+      },
+      "change_pct": {
+        "value": 0.6720442215038647,
+        "display": "+0.67%"
+      },
+      "change_pts": {
+        "value": 20.39990234375,
+        "display": "+20.40"
+      }
+    }
+  ],
+  "us_indices_prior_close": [
+    {
+      "symbol": "^GSPC",
+      "name": "S&P 500",
+      "close": {
+        "value": 7748.5,
+        "display": "7,748.50"
+      },
+      "change_pct": {
+        "value": 0.26267182752088836,
+        "display": "+0.26%"
+      },
+      "ytd_pct": {
+        "value": 13.191147469140319,
+        "display": "+13.2%"
+      }
+    },
+    {
+      "symbol": "^IXIC",
+      "name": "Nasdaq Composite",
+      "close": {
+        "value": 26588.48828125,
+        "display": "26,588.49"
+      },
+      "change_pct": {
+        "value": 0.5408834666290607,
+        "display": "+0.54%"
+      },
+      "ytd_pct": {
+        "value": 14.398500357019838,
+        "display": "+14.4%"
+      }
+    },
+    {
+      "symbol": "^DJI",
+      "name": "Dow Jones Industrial Average",
+      "close": {
+        "value": 53770.26953125,
+        "display": "53,770.27"
+      },
+      "change_pct": {
+        "value": -0.04012137642245284,
+        "display": "-0.04%"
+      },
+      "ytd_pct": {
+        "value": 11.87388666083342,
+        "display": "+11.9%"
+      }
+    },
+    {
+      "symbol": "^RUT",
+      "name": "Russell 2000",
+      "close": {
+        "value": 3045.48291015625,
+        "display": "3,045.48"
+      },
+      "change_pct": {
+        "value": 0.6066093269470496,
+        "display": "+0.61%"
+      },
+      "ytd_pct": {
+        "value": 22.707230238179534,
+        "display": "+22.7%"
+      }
+    }
+  ],
+  "volatility": {
+    "vix": {
+      "last": {
+        "value": 14.55,
+        "display": "14.55"
+      },
+      "change_pct": {
+        "value": -4.777486910994755,
+        "display": "-4.8%"
+      }
+    },
+    "vix_20d_avg": {
+      "value": 16.9625,
+      "display": "17.0"
+    },
+    "vix3m": {
+      "last": {
+        "value": 18.53,
+        "display": "18.53"
+      }
+    },
+    "term_structure": "contango"
+  },
+  "rates": {
+    "curve": [
+      {
+        "tenor": "1M",
+        "yield": {
+          "value": 3.78,
+          "display": "3.78%"
+        },
+        "change_bps": {
+          "value": -1.000000000000023,
+          "display": "-1 bp"
+        }
+      },
+      {
+        "tenor": "3M",
+        "yield": {
+          "value": 3.87,
+          "display": "3.87%"
+        },
+        "change_bps": {
+          "value": -2.0000000000000018,
+          "display": "-2 bps"
+        }
+      },
+      {
+        "tenor": "6M",
+        "yield": {
+          "value": 3.97,
+          "display": "3.97%"
+        },
+        "change_bps": {
+          "value": -2.0000000000000018,
+          "display": "-2 bps"
+        }
+      },
+      {
+        "tenor": "1Y",
+        "yield": {
+          "value": 4.0,
+          "display": "4.00%"
+        },
+        "change_bps": {
+          "value": -3.000000000000025,
+          "display": "-3 bps"
+        }
+      },
+      {
+        "tenor": "2Y",
+        "yield": {
+          "value": 4.2,
+          "display": "4.20%"
+        },
+        "change_bps": {
+          "value": -1.9999999999999574,
+          "display": "-2 bps"
+        }
+      },
+      {
+        "tenor": "3Y",
+        "yield": {
+          "value": 4.25,
+          "display": "4.25%"
+        },
+        "change_bps": {
+          "value": -1.9999999999999574,
+          "display": "-2 bps"
+        }
+      },
+      {
+        "tenor": "5Y",
+        "yield": {
+          "value": 4.38,
+          "display": "4.38%"
+        },
+        "change_bps": {
+          "value": -0.9999999999999787,
+          "display": "-1 bp"
+        }
+      },
+      {
+        "tenor": "7Y",
+        "yield": {
+          "value": 4.52,
+          "display": "4.52%"
+        },
+        "change_bps": {
+          "value": -2.000000000000046,
+          "display": "-2 bps"
+        }
+      },
+      {
+        "tenor": "10Y",
+        "yield": {
+          "value": 4.68,
+          "display": "4.68%"
+        },
+        "change_bps": {
+          "value": -2.000000000000046,
+          "display": "-2 bps"
+        }
+      },
+      {
+        "tenor": "20Y",
+        "yield": {
+          "value": 5.24,
+          "display": "5.24%"
+        },
+        "change_bps": {
+          "value": -0.9999999999999787,
+          "display": "-1 bp"
+        }
+      },
+      {
+        "tenor": "30Y",
+        "yield": {
+          "value": 5.24,
+          "display": "5.24%"
+        },
+        "change_bps": {
+          "value": 0.0,
+          "display": "unchanged"
+        }
+      }
+    ],
+    "spreads": {
+      "2s10s": {
+        "value": 47.99999999999996,
+        "display": "+48 bps"
+      },
+      "3m10y": {
+        "value": 80.99999999999996,
+        "display": "+81 bps"
+      }
+    },
+    "curve_date": "2026-08-12",
+    "curve_is_prior_day": false
+  },
+  "macro_latest": [
+    {
+      "series": "CPI YoY",
+      "fred_id": "CPIAUCSL",
+      "latest": {
+        "value": 3.30386,
+        "display": "3.3%"
+      },
+      "as_of": "2026-07-01",
+      "prior": {
+        "value": 3.46353,
+        "display": "3.5%"
+      },
+      "next_release": "2026-08-12"
+    },
+    {
+      "series": "Core CPI YoY",
+      "fred_id": "CPILFESL",
+      "latest": {
+        "value": 2.46652,
+        "display": "2.5%"
+      },
+      "as_of": "2026-07-01",
+      "prior": {
+        "value": 2.56579,
+        "display": "2.6%"
+      },
+      "next_release": "2026-08-12"
+    },
+    {
+      "series": "Core PCE YoY",
+      "fred_id": "PCEPILFE",
+      "latest": {
+        "value": 3.28653,
+        "display": "3.3%"
+      },
+      "as_of": "2026-06-01",
+      "prior": {
+        "value": 3.42158,
+        "display": "3.4%"
+      },
+      "next_release": "2026-08-26"
+    },
+    {
+      "series": "Unemployment rate",
+      "fred_id": "UNRATE",
+      "latest": {
+        "value": 4.1,
+        "display": "4.1%"
+      },
+      "as_of": "2026-07-01",
+      "prior": {
+        "value": 4.2,
+        "display": "4.2%"
+      }
+    },
+    {
+      "series": "Nonfarm payrolls m/m",
+      "fred_id": "PAYEMS",
+      "latest": {
+        "value": -23000.0,
+        "display": "-23,000"
+      },
+      "as_of": "2026-07-01",
+      "prior": {
+        "value": 20000.0,
+        "display": "+20,000"
+      }
+    },
+    {
+      "series": "Initial jobless claims",
+      "fred_id": "ICSA",
+      "latest": {
+        "value": 199000.0,
+        "display": "199,000"
+      },
+      "as_of": "2026-08-01",
+      "prior": {
+        "value": 198000.0,
+        "display": "198,000"
+      },
+      "next_release": "2026-08-13"
+    },
+    {
+      "series": "Effective fed funds rate",
+      "fred_id": "DFF",
+      "latest": {
+        "value": 3.63,
+        "display": "3.63%"
+      },
+      "as_of": "2026-08-11",
+      "prior": {
+        "value": 3.63,
+        "display": "3.63%"
+      },
+      "next_release": "2026-08-12"
+    },
+    {
+      "series": "Real GDP QoQ SAAR",
+      "fred_id": "GDPC1",
+      "latest": {
+        "value": 1.50015,
+        "display": "1.5%"
+      },
+      "as_of": "2026-04-01",
+      "prior": {
+        "value": 2.08919,
+        "display": "2.1%"
+      },
+      "next_release": "2026-08-26"
+    }
+  ],
+  "fx": [
+    {
+      "symbol": "DX-Y.NYB",
+      "name": "Dollar index",
+      "last": {
+        "value": 100.00299835205078,
+        "display": "100.00"
+      },
+      "change_pct": {
+        "value": 0.1833286493548858,
+        "display": "+0.18%"
+      }
+    },
+    {
+      "symbol": "EURUSD=X",
+      "name": "Euro/dollar",
+      "last": {
+        "value": 1.152339220046997,
+        "display": "1.1523"
+      },
+      "change_pct": {
+        "value": -0.1763084887379085,
+        "display": "-0.18%"
+      }
+    },
+    {
+      "symbol": "USDJPY=X",
+      "name": "Dollar/yen",
+      "last": {
+        "value": 159.46400451660156,
+        "display": "159.46"
+      },
+      "change_pct": {
+        "value": 0.12495220400952078,
+        "display": "+0.12%"
+      }
+    },
+    {
+      "symbol": "GBPUSD=X",
+      "name": "Sterling/dollar",
+      "last": {
+        "value": 1.3487813472747803,
+        "display": "1.3488"
+      },
+      "change_pct": {
+        "value": -0.1632063266452488,
+        "display": "-0.16%"
+      }
+    },
+    {
+      "symbol": "USDCNY=X",
+      "name": "Dollar/yuan",
+      "last": {
+        "value": 6.7434000968933105,
+        "display": "6.7434"
+      },
+      "change_pct": {
+        "value": -0.023718142222606264,
+        "display": "-0.02%"
+      }
+    }
+  ],
+  "commodities": [
+    {
+      "symbol": "CL=F",
+      "name": "WTI crude",
+      "last": {
+        "value": 82.16999816894531,
+        "display": "82.17"
+      },
+      "change_pct": {
+        "value": -1.2379793474483258,
+        "display": "-1.24%"
+      }
+    },
+    {
+      "symbol": "BZ=F",
+      "name": "Brent crude",
+      "last": {
+        "value": 87.9000015258789,
+        "display": "87.90"
+      },
+      "change_pct": {
+        "value": -1.1359825606000906,
+        "display": "-1.14%"
+      }
+    },
+    {
+      "symbol": "GC=F",
+      "name": "Gold",
+      "last": {
+        "value": 4465.89990234375,
+        "display": "4,465.90"
+      },
+      "change_pct": {
+        "value": 1.8913963573750747,
+        "display": "+1.89%"
+      }
+    },
+    {
+      "symbol": "SI=F",
+      "name": "Silver",
+      "last": {
+        "value": 65.73999786376953,
+        "display": "65.74"
+      },
+      "change_pct": {
+        "value": 1.4991750891287792,
+        "display": "+1.50%"
+      }
+    },
+    {
+      "symbol": "HG=F",
+      "name": "Copper",
+      "last": {
+        "value": 6.559500217437744,
+        "display": "6.56"
+      },
+      "change_pct": {
+        "value": -0.7940074290537003,
+        "display": "-0.79%"
+      }
+    },
+    {
+      "symbol": "NG=F",
+      "name": "Natural gas",
+      "last": {
+        "value": 2.7909998893737793,
+        "display": "2.79"
+      },
+      "change_pct": {
+        "value": 0.867362839736785,
+        "display": "+0.87%"
+      }
+    }
+  ],
+  "crypto": [
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "last": {
+        "value": 63353.0,
+        "display": "$63,353"
+      },
+      "change_pct_24h": {
+        "value": -0.6012638469674753,
+        "display": "-0.60%"
+      }
+    },
+    {
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "last": {
+        "value": 1872.92,
+        "display": "$1,873"
+      },
+      "change_pct_24h": {
+        "value": -0.5275272523765482,
+        "display": "-0.53%"
+      }
+    }
+  ],
+  "global_indices": [
+    {
+      "symbol": "^N225",
+      "name": "Nikkei 225",
+      "region": "Asia",
+      "last": {
+        "value": 68622.3828125,
+        "display": "68,622.38"
+      },
+      "change_pct": {
+        "value": 1.6265613646986976,
+        "display": "+1.63%"
+      },
+      "session_status": "open"
+    },
+    {
+      "symbol": "^HSI",
+      "name": "Hang Seng",
+      "region": "Asia",
+      "last": {
+        "value": 25391.740234375,
+        "display": "25,391.74"
+      },
+      "change_pct": {
+        "value": -0.1903669969529509,
+        "display": "-0.19%"
+      },
+      "session_status": "open"
+    },
+    {
+      "symbol": "000001.SS",
+      "name": "Shanghai Composite",
+      "region": "Asia",
+      "last": {
+        "value": 3966.8203125,
+        "display": "3,966.82"
+      },
+      "change_pct": {
+        "value": 0.5104363400239009,
+        "display": "+0.51%"
+      },
+      "session_status": "open"
+    },
+    {
+      "symbol": "^STOXX",
+      "name": "Stoxx 600",
+      "region": "Europe",
+      "last": {
+        "value": 659.47998046875,
+        "display": "659.48"
+      },
+      "change_pct": {
+        "value": -0.155944540074493,
+        "display": "-0.16%"
+      },
+      "session_status": "closed"
+    },
+    {
+      "symbol": "^GDAXI",
+      "name": "DAX",
+      "region": "Europe",
+      "last": {
+        "value": 26331.0703125,
+        "display": "26,331.07"
+      },
+      "change_pct": {
+        "value": -0.22867132406535484,
+        "display": "-0.23%"
+      },
+      "session_status": "closed"
+    },
+    {
+      "symbol": "^FTSE",
+      "name": "FTSE 100",
+      "region": "Europe",
+      "last": {
+        "value": 10833.2001953125,
+        "display": "10,833.20"
+      },
+      "change_pct": {
+        "value": -0.10143671088582717,
+        "display": "-0.10%"
+      },
+      "session_status": "closed"
+    }
+  ],
+  "sectors": [
+    {
+      "etf": "XLK",
+      "name": "Technology",
+      "change_pct": {
+        "value": 1.4885293820046774,
+        "display": "+1.49%"
+      },
+      "rank": 1
+    },
+    {
+      "etf": "XLRE",
+      "name": "Real estate",
+      "change_pct": {
+        "value": 0.9301266569441413,
+        "display": "+0.93%"
+      },
+      "rank": 2
+    },
+    {
+      "etf": "XLU",
+      "name": "Utilities",
+      "change_pct": {
+        "value": 0.4813180823553198,
+        "display": "+0.48%"
+      },
+      "rank": 3
+    },
+    {
+      "etf": "XLP",
+      "name": "Consumer staples",
+      "change_pct": {
+        "value": 0.4605022770170164,
+        "display": "+0.46%"
+      },
+      "rank": 4
+    },
+    {
+      "etf": "XLV",
+      "name": "Health care",
+      "change_pct": {
+        "value": 0.2559418776439726,
+        "display": "+0.26%"
+      },
+      "rank": 5
+    },
+    {
+      "etf": "XLF",
+      "name": "Financials",
+      "change_pct": {
+        "value": 0.20761061153755644,
+        "display": "+0.21%"
+      },
+      "rank": 6
+    },
+    {
+      "etf": "XLE",
+      "name": "Energy",
+      "change_pct": {
+        "value": 0.16412025869068092,
+        "display": "+0.16%"
+      },
+      "rank": 7
+    },
+    {
+      "etf": "XLI",
+      "name": "Industrials",
+      "change_pct": {
+        "value": 0.09693480750054828,
+        "display": "+0.10%"
+      },
+      "rank": 8
+    },
+    {
+      "etf": "XLC",
+      "name": "Communication services",
+      "change_pct": {
+        "value": -0.8987148648955334,
+        "display": "-0.90%"
+      },
+      "rank": 9
+    },
+    {
+      "etf": "XLY",
+      "name": "Consumer discretionary",
+      "change_pct": {
+        "value": -1.1321691532261258,
+        "display": "-1.13%"
+      },
+      "rank": 10
+    },
+    {
+      "etf": "XLB",
+      "name": "Materials",
+      "change_pct": {
+        "value": -1.2396690958014212,
+        "display": "-1.24%"
+      },
+      "rank": 11
+    }
+  ],
+  "movers": {
+    "premarket": [
+      {
+        "symbol": "CSCO",
+        "name": "Cisco",
+        "change_pct": {
+          "value": -4.068451215015589,
+          "display": "-4.1%"
+        },
+        "last": {
+          "value": 118.84,
+          "display": "$118.84"
+        }
+      },
+      {
+        "symbol": "NFLX",
+        "name": "Netflix",
+        "change_pct": {
+          "value": 1.1449951839510808,
+          "display": "+1.1%"
+        },
+        "last": {
+          "value": 75.0597,
+          "display": "$75.06"
+        }
+      },
+      {
+        "symbol": "MU",
+        "name": "Micron",
+        "change_pct": {
+          "value": 1.0106576605388717,
+          "display": "+1.0%"
+        },
+        "last": {
+          "value": 920.5,
+          "display": "$920.50"
+        }
+      },
+      {
+        "symbol": "DE",
+        "name": "Deere",
+        "change_pct": {
+          "value": 1.0019814242461678,
+          "display": "+1.0%"
+        },
+        "last": {
+          "value": 625.98,
+          "display": "$625.98"
+        }
+      },
+      {
+        "symbol": "AMAT",
+        "name": "Applied Materials",
+        "change_pct": {
+          "value": 0.8644304250469803,
+          "display": "+0.9%"
+        },
+        "last": {
+          "value": 552.8884,
+          "display": "$552.89"
+        }
+      }
+    ],
+    "prior_session_gainers": [
+      {
+        "symbol": "SMCI",
+        "name": "Super Micro Computer",
+        "change_pct": {
+          "value": 19.01898783648783,
+          "display": "+19.0%"
+        },
+        "last": {
+          "value": 37.61000061035156,
+          "display": "$37.61"
+        },
+        "volume_vs_avg": {
+          "value": 3.347880027353895,
+          "display": "3.3x average"
+        }
+      },
+      {
+        "symbol": "DELL",
+        "name": "Dell",
+        "change_pct": {
+          "value": 9.871419520329304,
+          "display": "+9.9%"
+        },
+        "last": {
+          "value": 484.5,
+          "display": "$484.50"
+        },
+        "volume_vs_avg": {
+          "value": 0.9780939728209554,
+          "display": "1.0x average"
+        }
+      },
+      {
+        "symbol": "ANET",
+        "name": "Arista Networks",
+        "change_pct": {
+          "value": 6.393729343564369,
+          "display": "+6.4%"
+        },
+        "last": {
+          "value": 210.5,
+          "display": "$210.50"
+        },
+        "volume_vs_avg": {
+          "value": 1.273273395890806,
+          "display": "1.3x average"
+        }
+      },
+      {
+        "symbol": "ORCL",
+        "name": "Oracle",
+        "change_pct": {
+          "value": 5.361563981872797,
+          "display": "+5.4%"
+        },
+        "last": {
+          "value": 153.27999877929688,
+          "display": "$153.28"
+        },
+        "volume_vs_avg": {
+          "value": 1.2479649391493184,
+          "display": "1.2x average"
+        }
+      },
+      {
+        "symbol": "MU",
+        "name": "Micron",
+        "change_pct": {
+          "value": 4.9244643225584195,
+          "display": "+4.9%"
+        },
+        "last": {
+          "value": 911.2899780273438,
+          "display": "$911.29"
+        },
+        "volume_vs_avg": {
+          "value": 0.792972559820937,
+          "display": "0.8x average"
+        }
+      }
+    ],
+    "prior_session_losers": [
+      {
+        "symbol": "UBER",
+        "name": "Uber",
+        "change_pct": {
+          "value": -4.048892625550115,
+          "display": "-4.0%"
+        },
+        "last": {
+          "value": 75.36000061035156,
+          "display": "$75.36"
+        },
+        "volume_vs_avg": {
+          "value": 0.9016830897027837,
+          "display": "0.9x average"
+        }
+      },
+      {
+        "symbol": "LULU",
+        "name": "Lululemon",
+        "change_pct": {
+          "value": -3.773583186639129,
+          "display": "-3.8%"
+        },
+        "last": {
+          "value": 120.87000274658203,
+          "display": "$120.87"
+        },
+        "volume_vs_avg": {
+          "value": 1.1894588793279248,
+          "display": "1.2x average"
+        }
+      },
+      {
+        "symbol": "META",
+        "name": "Meta",
+        "change_pct": {
+          "value": -3.383298787630218,
+          "display": "-3.4%"
+        },
+        "last": {
+          "value": 578.8499755859375,
+          "display": "$578.85"
+        },
+        "volume_vs_avg": {
+          "value": 0.941761419770786,
+          "display": "0.9x average"
+        }
+      },
+      {
+        "symbol": "HD",
+        "name": "Home Depot",
+        "change_pct": {
+          "value": -3.117247226381137,
+          "display": "-3.1%"
+        },
+        "last": {
+          "value": 343.42999267578125,
+          "display": "$343.43"
+        },
+        "volume_vs_avg": {
+          "value": 0.8377415880854193,
+          "display": "0.8x average"
+        }
+      },
+      {
+        "symbol": "GM",
+        "name": "General Motors",
+        "change_pct": {
+          "value": -2.898708877584122,
+          "display": "-2.9%"
+        },
+        "last": {
+          "value": 86.76000213623047,
+          "display": "$86.76"
+        },
+        "volume_vs_avg": {
+          "value": 0.4846227505502078,
+          "display": "0.5x average"
+        }
+      }
+    ]
+  },
+  "technicals": [
+    {
+      "symbol": "^GSPC",
+      "name": "S&P 500",
+      "last": {
+        "value": 7748.5,
+        "display": "7,748.50"
+      },
+      "sma20": {
+        "value": 7562.003442382813,
+        "display": "7,562"
+      },
+      "sma50": {
+        "value": 7508.87880859375,
+        "display": "7,509"
+      },
+      "sma200": {
+        "value": 7053.689353027344,
+        "display": "7,054"
+      },
+      "week52_high": {
+        "value": 7793.68017578125,
+        "display": "7,794"
+      },
+      "week52_low": {
+        "value": 6316.91015625,
+        "display": "6,317"
+      },
+      "prior_day_high": {
+        "value": 7767.509765625,
+        "display": "7,768"
+      },
+      "prior_day_low": {
+        "value": 7717.25,
+        "display": "7,717"
+      },
+      "pct_from_52w_high": {
+        "value": -0.58,
+        "display": "0.6%"
+      },
+      "position_vs_sma50": "above"
+    },
+    {
+      "symbol": "^IXIC",
+      "name": "Nasdaq Composite",
+      "last": {
+        "value": 26588.48828125,
+        "display": "26,588.49"
+      },
+      "sma20": {
+        "value": 25742.02177734375,
+        "display": "25,742"
+      },
+      "sma50": {
+        "value": 25914.930703125,
+        "display": "25,915"
+      },
+      "sma200": {
+        "value": 24145.460927734373,
+        "display": "24,145"
+      },
+      "week52_high": {
+        "value": 27190.2109375,
+        "display": "27,190"
+      },
+      "week52_low": {
+        "value": 20690.25,
+        "display": "20,690"
+      },
+      "prior_day_high": {
+        "value": 26679.259765625,
+        "display": "26,679"
+      },
+      "prior_day_low": {
+        "value": 26372.310546875,
+        "display": "26,372"
+      },
+      "pct_from_52w_high": {
+        "value": -2.21,
+        "display": "2.2%"
+      },
+      "position_vs_sma50": "above"
+    },
+    {
+      "symbol": "^RUT",
+      "name": "Russell 2000",
+      "last": {
+        "value": 3045.48291015625,
+        "display": "3,045.48"
+      },
+      "sma20": {
+        "value": 2978.0971435546876,
+        "display": "2,978"
+      },
+      "sma50": {
+        "value": 2961.7916650390625,
+        "display": "2,962"
+      },
+      "sma200": {
+        "value": 2690.7520166015624,
+        "display": "2,691"
+      },
+      "week52_high": {
+        "value": 3051.023193359375,
+        "display": "3,051"
+      },
+      "week52_low": {
+        "value": 2252.429931640625,
+        "display": "2,252"
+      },
+      "prior_day_high": {
+        "value": 3036.090087890625,
+        "display": "3,036"
+      },
+      "prior_day_low": {
+        "value": 3023.469970703125,
+        "display": "3,023"
+      },
+      "pct_from_52w_high": {
+        "value": -0.18,
+        "display": "0.2%"
+      },
+      "position_vs_sma50": "above"
+    }
+  ],
+  "calendar": {
+    "treasury_auctions": [
+      {
+        "date": "2026-08-12",
+        "tenor": "10Y",
+        "security_type": "Note",
+        "size": {
+          "value": 42000000000.0,
+          "display": "$42 billion"
+        }
+      },
+      {
+        "date": "2026-08-12",
+        "tenor": "17W",
+        "security_type": "Bill",
+        "size": {
+          "value": 72000000000.0,
+          "display": "$72 billion"
+        }
+      },
+      {
+        "date": "2026-08-13",
+        "tenor": "30Y",
+        "security_type": "Bond",
+        "size": {
+          "value": 25000000000.0,
+          "display": "$25 billion"
+        }
+      },
+      {
+        "date": "2026-08-13",
+        "tenor": "4W",
+        "security_type": "Bill",
+        "size": {
+          "value": 110000000000.0,
+          "display": "$110 billion"
+        }
+      },
+      {
+        "date": "2026-08-13",
+        "tenor": "8W",
+        "security_type": "Bill",
+        "size": {
+          "value": 100000000000.0,
+          "display": "$100 billion"
+        }
+      }
+    ],
+    "fed_speakers": [
+      {
+        "date": "2026-08-19",
+        "speaker": "FOMC Minutes",
+        "topic": "Meeting of July 28-29",
+        "time_et": "14:00"
+      }
+    ],
+    "economic": [
+      {
+        "date": "2026-08-12",
+        "time_et": "08:30",
+        "event": "Consumer Price Index",
+        "importance": "high",
+        "prior": {
+          "value": 3.30386,
+          "display": "3.3%"
+        },
+        "prior_series": "CPI YoY"
+      },
+      {
+        "date": "2026-08-13",
+        "time_et": "08:30",
+        "event": "Producer Price Index",
+        "importance": "medium"
+      },
+      {
+        "date": "2026-08-13",
+        "time_et": "08:30",
+        "event": "Unemployment Insurance Weekly Claims Report",
+        "importance": "medium",
+        "prior": {
+          "value": 199000.0,
+          "display": "199,000"
+        },
+        "prior_series": "Initial jobless claims"
+      },
+      {
+        "date": "2026-08-14",
+        "time_et": "08:30",
+        "event": "Advance Monthly Sales for Retail and Food Services",
+        "importance": "high"
+      },
+      {
+        "date": "2026-08-18",
+        "time_et": "08:30",
+        "event": "New Residential Construction",
+        "importance": "medium"
+      },
+      {
+        "date": "2026-08-18",
+        "time_et": "09:15",
+        "event": "G.17 Industrial Production and Capacity Utilization",
+        "importance": "medium"
+      },
+      {
+        "date": "2026-08-26",
+        "time_et": "08:30",
+        "event": "Gross Domestic Product",
+        "importance": "high",
+        "prior": {
+          "value": 1.50015,
+          "display": "1.5%"
+        },
+        "prior_series": "Real GDP QoQ SAAR"
+      },
+      {
+        "date": "2026-08-26",
+        "time_et": "08:30",
+        "event": "Personal Income and Outlays",
+        "importance": "high",
+        "prior": {
+          "value": 3.28653,
+          "display": "3.3%"
+        },
+        "prior_series": "Core PCE YoY"
+      }
+    ],
+    "earnings": [
+      {
+        "date": "2026-08-12",
+        "symbol": "CSCO",
+        "name": "Cisco",
+        "session": "after_close",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 1.1937,
+          "display": "$1.19"
+        }
+      },
+      {
+        "date": "2026-08-13",
+        "symbol": "AMAT",
+        "name": "Applied Materials",
+        "session": "after_close",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 3.4544,
+          "display": "$3.45"
+        }
+      },
+      {
+        "date": "2026-08-18",
+        "symbol": "HD",
+        "name": "Home Depot",
+        "session": "before_open",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 4.8762,
+          "display": "$4.88"
+        }
+      },
+      {
+        "date": "2026-08-19",
+        "symbol": "ADI",
+        "name": "Analog Devices",
+        "session": "before_open",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 3.3681,
+          "display": "$3.37"
+        }
+      },
+      {
+        "date": "2026-08-19",
+        "symbol": "LOW",
+        "name": "Lowe's",
+        "session": "before_open",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 4.2878,
+          "display": "$4.29"
+        }
+      },
+      {
+        "date": "2026-08-19",
+        "symbol": "TGT",
+        "name": "Target",
+        "session": "before_open",
+        "importance": "medium"
+      },
+      {
+        "date": "2026-08-19",
+        "symbol": "TGT",
+        "name": "Target",
+        "session": "before_open",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 2.3095,
+          "display": "$2.31"
+        }
+      },
+      {
+        "date": "2026-08-19",
+        "symbol": "TJX",
+        "name": "TJX",
+        "session": "before_open",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 1.2036,
+          "display": "$1.20"
+        }
+      },
+      {
+        "date": "2026-08-20",
+        "symbol": "WMT",
+        "name": "Walmart",
+        "session": "unspecified",
+        "importance": "high",
+        "eps_consensus": {
+          "value": 0.7493,
+          "display": "$0.75"
+        }
+      },
+      {
+        "date": "2026-08-20",
+        "symbol": "DE",
+        "name": "Deere",
+        "session": "before_open",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 4.8353,
+          "display": "$4.84"
+        }
+      },
+      {
+        "date": "2026-08-25",
+        "symbol": "INTU",
+        "name": "Intuit",
+        "session": "after_close",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 3.6537,
+          "display": "$3.65"
+        }
+      },
+      {
+        "date": "2026-08-26",
+        "symbol": "NVDA",
+        "name": "Nvidia",
+        "session": "after_close",
+        "importance": "high",
+        "eps_consensus": {
+          "value": 2.1283,
+          "display": "$2.13"
+        }
+      },
+      {
+        "date": "2026-08-26",
+        "symbol": "CRM",
+        "name": "Salesforce",
+        "session": "after_close",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 3.3057,
+          "display": "$3.31"
+        }
+      },
+      {
+        "date": "2026-08-26",
+        "symbol": "SNPS",
+        "name": "Synopsys",
+        "session": "unspecified",
+        "importance": "medium",
+        "eps_consensus": {
+          "value": 3.7394,
+          "display": "$3.74"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+Rewrite the briefing below as a script to be read aloud by a single narrator.
+This is a pure format transformation. The analysis, the ordering, the judgments,
+and every figure stay exactly as they are.
+
+HARD RULE ON NUMBERS
+Reproduce every numeric value character-for-character as it appears in the
+source. Do not round, reformat, convert, spell out, or combine figures. You may
+change the words around a number; you may never change the number. A downstream
+validator will reject the script if any figure differs.
+
+REMOVE
+- All markdown: headings, bullets, bold, tables.
+- Tables entirely. If a table carried a fact not stated in the prose, fold that
+  fact into a sentence. Otherwise drop it.
+- Any phrase referring to visual layout ("as shown below", "the table above",
+  "see the following").
+
+CONVERT FOR THE EAR
+- Tickers to company names on first mention: "NVDA" becomes "Nvidia". A bare
+  ticker read aloud is unintelligible.
+- Abbreviations to words: "bps" to "basis points", "YoY" to "year over year",
+  "m/m" to "month over month", "EPS" to "earnings per share".
+- Acronyms spelled out on first mention only: "FOMC" becomes "the FOMC, the
+  Fed's rate-setting committee". Thereafter just "the FOMC".
+- Index shorthand: "10Y" becomes "the ten-year", "2s10s" becomes "the two-year
+  to ten-year spread".
+- Leave numerals as numerals — "4.32%", "6,412.25", "$182.40". The speech engine
+  reads these correctly, and spelling them out breaks validation.
+
+STRUCTURE FOR THE EAR
+- Continuous prose. Where the source had a heading, write a spoken transition
+  instead: "Turning to rates." / "On the corporate side."
+- Signpost lists in speech: "Three things stand out this morning. First, …"
+- Break sentences over about 30 words into two. Listeners lose long clauses.
+- Open with: "Good morning. It's {weekday}, {month} {day}. Here's your
+  pre-market briefing." Close with one sentence naming the single thing to watch
+  today, then: "That's your briefing. Have a good one."
+
+Target 1,700–1,800 words. Output the script text only — no preamble, no
+commentary, no markdown.
+
+BRIEFING:
+{report_markdown}

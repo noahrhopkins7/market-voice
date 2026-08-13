@@ -1,0 +1,19 @@
+# Python 3.11+
+# Only the dependencies sanctioned in CLAUDE.md "Conventions" are listed here.
+# Nothing outside this set gets added without asking.
+
+# --- Phase 1: data layer ---
+yfinance>=0.2.40
+requests>=2.31.0
+pandas-market-calendars>=4.4.0
+python-dotenv>=1.0.0
+
+# --- Phase 3: generation (not yet used) ---
+anthropic>=0.40.0
+
+# --- Phase 4: audio (not yet used) ---
+openai>=1.50.0
+pydub>=0.25.1
+
+# --- dev ---
+pytest>=8.0.0

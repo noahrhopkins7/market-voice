@@ -1,0 +1,40 @@
+# --- secrets ---
+.env
+*.env
+!.env.example
+API_KEYS.env
+*.key
+*.pem
+
+# --- runtime data (local runs only, per SPEC §8) ---
+data/
+!data/.gitkeep
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+env/
+ENV/
+
+# --- tooling ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- os / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+.vscode/*
+!.vscode/settings.json
+public/
