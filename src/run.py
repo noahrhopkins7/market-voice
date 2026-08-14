@@ -33,12 +33,47 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 ET = ZoneInfo("America/New_York")
 
-WINDOW_START_HOUR = 6   # inclusive
-WINDOW_END_HOUR = 7     # exclusive -> 06:00-06:59 ET
+# Measured 2026-08-13: the 10:15 UTC entry fired at 12:00 UTC — 105 minutes
+# late, against SPEC.md §7's assumed 5-20. Both runs that day woke outside a
+# 06:00-06:59 window and published nothing.
+#
+# So the window is no longer the double-publish guard; `already_published` is.
+# The window only answers "is it still meaningfully pre-market?" — a briefing
+# written after the 09:30 open is not a pre-market briefing, so 09:00 ET is the
+# latest a run may start.
+WINDOW_START_HOUR = 5   # inclusive
+WINDOW_END_HOUR = 9     # exclusive -> 05:00-08:59 ET
 
 
 def within_window(now_et: dt.datetime) -> bool:
     return WINDOW_START_HOUR <= now_et.hour < WINDOW_END_HOUR
+
+
+def already_published(trading_day: str) -> bool:
+    """True if the live feed already carries this trading day's episode.
+
+    This is what makes frequent cron entries safe: the first run of the day
+    that lands inside the window publishes, and every later one exits here
+    before spending a cent on APIs.
+
+    On any failure, return False. Re-running costs ~$1 and overwrites the
+    episode in place (same filename, same guid); skipping means no briefing at
+    all. The cheaper mistake is to run twice.
+    """
+    import os
+    import urllib.request
+
+    base = os.getenv("FEED_BASE_URL")
+    token = os.getenv("FEED_TOKEN")
+    if not base or not token:
+        return False
+    url = f"{base.rstrip('/')}/f/{token}/feed.xml"
+    try:
+        with urllib.request.urlopen(url, timeout=15) as response:
+            return f"market-voice-{trading_day}" in response.read().decode("utf-8")
+    except Exception:  # noqa: BLE001 - never let this check block a briefing
+        log.info("could not read the published feed; assuming not yet published")
+        return False
 
 
 def is_trading_day(day: dt.date) -> bool:
@@ -79,10 +114,14 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.force:
         if not within_window(now_et):
-            log.info("outside the 06:00-06:59 ET window — exiting cleanly")
+            log.info("outside the %02d:00-%02d:59 ET window — exiting cleanly",
+                     WINDOW_START_HOUR, WINDOW_END_HOUR - 1)
             return 0
         if not is_trading_day(now_et.date()):
             log.info("%s is not an NYSE session — exiting cleanly", now_et.date())
+            return 0
+        if already_published(now_et.date().isoformat()):
+            log.info("today's episode is already in the feed — exiting cleanly")
             return 0
 
     started = dt.datetime.now()

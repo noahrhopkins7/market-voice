@@ -10,9 +10,22 @@ name: brief
 # against the 6:50 ET publish target.
 on:
   schedule:
-    - cron: '15 10 * * 1-5'   # 06:15 EDT
-    - cron: '15 11 * * 1-5'   # 06:15 EST
+    # Every 30 minutes across 09:00-13:30 UTC on weekdays. That spans roughly
+    # 04:00-09:30 ET in both EDT and EST, so no single entry has to land on
+    # target — measured drift on 2026-08-13 was 105 minutes, which defeated the
+    # original two-entry schedule entirely.
+    #
+    # Firing often is safe and free: src/run.py exits immediately unless it is
+    # a trading day, inside 05:00-08:59 ET, and today's episode is not already
+    # in the feed. Only the first qualifying run of the day spends anything,
+    # and public repositories get unmetered Actions minutes.
+    - cron: '0,30 9-13 * * 1-5'
   workflow_dispatch:           # manual runs — you will want these constantly
+    inputs:
+      force:
+        description: 'Skip the time-window and already-published guards'
+        type: boolean
+        default: false
 
 concurrency:
   # Never let two briefings race for the same gh-pages commit.
@@ -63,7 +76,7 @@ jobs:
           FRED_API_KEY:      ${{ secrets.FRED_API_KEY }}
           FEED_TOKEN:        ${{ secrets.FEED_TOKEN }}
           FEED_BASE_URL:     ${{ secrets.FEED_BASE_URL }}
-        run: python -m src.run --verbose
+        run: python -m src.run --verbose ${{ inputs.force && '--force' || '' }}
 
       # Kept even on failure: costs.jsonl and the rejection log are how you
       # diagnose a bad morning after the fact.
