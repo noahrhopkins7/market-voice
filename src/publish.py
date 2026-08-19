@@ -284,6 +284,79 @@ def publish(config: dict, public_dir: Path = PUBLIC_DIR) -> Path:
     return feed_dir / "feed.xml"
 
 
+def _run_git(*args: str, cwd: Path) -> str:
+    return subprocess.run(["git", *args], cwd=cwd, check=True,
+                          capture_output=True, text=True).stdout.strip()
+
+
+def record_outcome(config: dict, trading_day: str, reason: str) -> None:
+    """Write why today's run failed into gh-pages state.json.
+
+    Actions logs need authentication to read, so a failure that only lands in
+    the log is invisible to anyone without repo access — diagnosing the
+    2026-08-14..18 failures took reconstructing them from step durations. This
+    puts the reason somewhere publicly readable.
+    """
+    _mutate_state(config, lambda state: state.__setitem__(
+        "last_failure",
+        {"trading_day": trading_day,
+         "at_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+         "reason": reason[:2000]}))
+
+
+def record_attempt(config: dict, trading_day: str) -> None:
+    """Increment today's generation-attempt counter on gh-pages.
+
+    Written *before* generation, not after, so a crashed or failed run still
+    counts. This is the circuit breaker that stops a deterministic failure from
+    re-running the paid pipeline once per cron slot: between 2026-08-14 and
+    2026-08-18 a failing validator burned 3-6 full Pass 1 runs every morning.
+    """
+    def bump(state: dict) -> None:
+        attempts = state.get("attempts", {})
+        attempts[trading_day] = attempts.get(trading_day, 0) + 1
+        # Keep the file small; 30 days is plenty of history.
+        state["attempts"] = dict(sorted(attempts.items())[-30:])
+        log.info("attempt %d for %s", attempts[trading_day], trading_day)
+
+    _mutate_state(config, bump)
+
+
+def _mutate_state(config: dict, mutate) -> None:
+    """Apply `mutate` to gh-pages state.json and push it."""
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        worktree = Path(tmp) / "ghp"
+        try:
+            _run_git("fetch", "origin", GH_PAGES_BRANCH, cwd=ROOT)
+            _run_git("worktree", "add", str(worktree),
+                     f"origin/{GH_PAGES_BRANCH}", cwd=ROOT)
+        except subprocess.CalledProcessError:
+            log.warning("cannot reach %s; state not updated", GH_PAGES_BRANCH)
+            return
+        try:
+            state_path = worktree / "state.json"
+            state = {}
+            if state_path.exists():
+                try:
+                    state = json.loads(state_path.read_text())
+                except ValueError:
+                    pass
+            mutate(state)
+            state_path.write_text(json.dumps(state, indent=2))
+
+            _run_git("add", "state.json", cwd=worktree)
+            if _run_git("status", "--porcelain", cwd=worktree):
+                _run_git("commit", "-m", "update run state", cwd=worktree)
+                _run_git("push", "origin", f"HEAD:{GH_PAGES_BRANCH}", cwd=worktree)
+        except subprocess.CalledProcessError as exc:
+            log.warning("could not update state: %s", exc)
+        finally:
+            subprocess.run(["git", "worktree", "remove", "--force", str(worktree)],
+                           cwd=ROOT, capture_output=True)
+
+
 def publish_to_branch(config: dict) -> Path:
     """Build the site inside a gh-pages worktree, then commit and push it.
 

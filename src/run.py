@@ -3,18 +3,24 @@
     python -m src.run --local        # everything except publish
     python -m src.run                # the real thing, publishes
 
-THE DST GUARD IS WHY THIS FILE EXISTS
--------------------------------------
-GitHub Actions cron is UTC and ignores daylight saving, so brief.yml carries two
-schedule entries (10:15 and 11:15 UTC) to cover EDT and EST. Exactly one of them
-is 06:15 America/New_York on any given date — the other is 05:15 or 07:15. The
-guard below exits cleanly unless local ET time is 06:00-06:59, so the wrong
-entry becomes a no-op. Without it you publish twice a day for half the year.
+THE GUARDS, AND WHY EACH ONE EXISTS
+-----------------------------------
+brief.yml fires every 30 minutes across a wide UTC band rather than at one
+nominal time, because GitHub cron drift was measured at 105 minutes on
+2026-08-13 — far past SPEC.md §7's assumed 5-20. Four guards decide whether a
+given firing does any work:
 
-NYSE holidays are skipped via pandas_market_calendars, never a hardcoded list.
+  within_window     is it still meaningfully pre-market (05:00-08:59 ET)?
+  is_trading_day    NYSE session, via pandas_market_calendars
+  already_published does today's episode exist in the live feed? This, not the
+                    time window, is what prevents double-publishing
+  attempts_today    have 2 attempts already failed today? Between 2026-08-14
+                    and 08-18 a failing run re-ran the paid pipeline once per
+                    cron slot, 3-6 times a morning, for nothing
 
-A guard exit is a success (status 0), not a failure — a non-zero exit here would
-light up Actions notifications every single weekday.
+The first three exit 0 — a skipped firing is the normal case and must not send
+a failure email. Exhausting the attempt cap exits 1, because that is a real
+problem someone needs to look at.
 """
 
 from __future__ import annotations
@@ -47,6 +53,34 @@ WINDOW_END_HOUR = 9     # exclusive -> 05:00-08:59 ET
 
 def within_window(now_et: dt.datetime) -> bool:
     return WINDOW_START_HOUR <= now_et.hour < WINDOW_END_HOUR
+
+
+# A deterministic failure must not re-run the paid pipeline once per cron slot.
+# Measured 2026-08-14..18: 3-6 full Pass 1 runs every morning, all failing,
+# roughly $2-4/day for nothing.
+MAX_ATTEMPTS_PER_DAY = 2
+
+
+def _feed_dir_url() -> str | None:
+    import os
+
+    base, token = os.getenv("FEED_BASE_URL"), os.getenv("FEED_TOKEN")
+    return f"{base.rstrip('/')}/f/{token}" if base and token else None
+
+
+def attempts_today(trading_day: str) -> int:
+    """How many generation attempts gh-pages has already recorded today."""
+    import json as _json
+    import urllib.request
+
+    feed_dir = _feed_dir_url()
+    if not feed_dir:
+        return 0
+    try:
+        with urllib.request.urlopen(f"{feed_dir}/state.json", timeout=15) as r:
+            return _json.loads(r.read().decode()).get("attempts", {}).get(trading_day, 0)
+    except Exception:  # noqa: BLE001 - absent state.json is the normal first run
+        return 0
 
 
 def already_published(trading_day: str) -> bool:
@@ -120,13 +154,29 @@ def main(argv: list[str] | None = None) -> int:
         if not is_trading_day(now_et.date()):
             log.info("%s is not an NYSE session — exiting cleanly", now_et.date())
             return 0
-        if already_published(now_et.date().isoformat()):
+        today = now_et.date().isoformat()
+        if already_published(today):
             log.info("today's episode is already in the feed — exiting cleanly")
             return 0
+        tried = attempts_today(today)
+        if tried >= MAX_ATTEMPTS_PER_DAY:
+            log.error("%d attempts already failed today; not spending more. "
+                      "Investigate, then re-run with --force.", tried)
+            return 1
 
     started = dt.datetime.now()
 
     from . import fetch_data, generate, tts, validate
+    from . import publish as publish_mod
+
+    # Recorded before generation so a crash still counts against the cap.
+    if not args.force and not args.local:
+        try:
+            publish_mod.record_attempt(
+                publish_mod.build_config(now_et.date().isoformat()),
+                now_et.date().isoformat())
+        except SystemExit:
+            log.warning("feed config missing; attempt not recorded")
 
     # 1. Fetch -----------------------------------------------------------
     log.info("fetch")
@@ -179,8 +229,18 @@ def main(argv: list[str] | None = None) -> int:
         if not outcome.ok:
             # SPEC.md §5: publish nothing. A missing episode is recoverable;
             # a wrong one you acted on is not.
+            offenders = [v.raw for v in outcome.violations]
             log.error("validation failed twice — publishing nothing")
-            log.error("offending figures: %s", [v.raw for v in outcome.violations])
+            log.error("offending figures: %s", offenders)
+            if not args.local:
+                try:
+                    publish_mod.record_outcome(
+                        publish_mod.build_config(market_data["meta"]["trading_day"]),
+                        market_data["meta"]["trading_day"],
+                        "validation failed twice; rejected figures: "
+                        + ", ".join(offenders))
+                except Exception:  # noqa: BLE001 - reporting must not mask the failure
+                    log.warning("could not record the failure reason")
             return 1
 
     log.info("validation passed — %d figures checked", outcome.checked)
@@ -198,8 +258,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.local:
         log.info("--local: skipping publish")
     else:
-        from . import publish as publish_mod
-
         config = publish_mod.build_config(market_data["meta"]["trading_day"])
         publish_mod.publish_to_branch(config)
 
