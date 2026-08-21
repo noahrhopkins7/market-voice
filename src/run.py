@@ -193,10 +193,23 @@ def main(argv: list[str] | None = None) -> int:
     import anthropic
 
     client = anthropic.Anthropic()
-    log.info("pass 1 — research")
-    report, research_usage = generate.run_research(client, market_data)
-    log.info("pass 2 — script")
-    script, script_usage = generate.run_script(client, report)
+    trading_day = market_data["meta"]["trading_day"]
+    try:
+        log.info("pass 1 — research")
+        report, research_usage = generate.run_research(client, market_data)
+        log.info("pass 2 — script")
+        script, script_usage = generate.run_script(client, report)
+    except BaseException as exc:
+        # Report before re-raising: CI logs need auth to read, so an unrecorded
+        # generation failure is invisible from outside the repo.
+        if not args.local:
+            try:
+                publish_mod.record_outcome(
+                    publish_mod.build_config(trading_day), trading_day,
+                    f"{type(exc).__name__}: {exc}")
+            except Exception:  # noqa: BLE001 - reporting must not mask the error
+                log.warning("could not record the failure reason")
+        raise
 
     result = generate.Result(report=report, script=script,
                              usages=[research_usage, script_usage])

@@ -61,6 +61,16 @@ DAILY_ALERT = 1.20
 # Pass 1 must hold thinking + prose. Sonnet 5 runs adaptive thinking by default
 # and max_tokens caps the two together, so this is deliberately generous.
 RESEARCH_MAX_TOKENS = 16000
+
+# Pass 1 runs web search server-side. When that loop hits its iteration limit
+# the API returns stop_reason "pause_turn" with the turn unfinished — often with
+# no text block at all — and expects the conversation to be re-sent to continue.
+# Not handling this is what killed every CI run between 2026-08-14 and 08-18:
+# ~250s of searching, then "Pass 1 returned no text blocks" and exit 1.
+#
+# Bounded because each continuation may search again: a runaway loop is the one
+# way this gets expensive.
+MAX_CONTINUATIONS = 3
 SCRIPT_MAX_TOKENS = 4000
 
 
@@ -73,6 +83,14 @@ class Usage:
     output_tokens: int = 0
     cache_read_tokens: int = 0
     searches: int = 0
+
+    def add(self, response, model: str) -> None:
+        """Fold another response's usage in, for multi-round turns."""
+        usage = getattr(response, "usage", None)
+        self.input_tokens += getattr(usage, "input_tokens", 0) or 0
+        self.output_tokens += getattr(usage, "output_tokens", 0) or 0
+        self.cache_read_tokens += getattr(usage, "cache_read_input_tokens", 0) or 0
+        self.searches += _count_searches(response)
 
     def dollars(self) -> float:
         rates = PRICING.get(self.model)
@@ -139,36 +157,68 @@ def _usage_of(response, model: str, pass_name: str) -> Usage:
 # --------------------------------------------------------------------------
 
 def run_research(client, market_data: dict) -> tuple[str, Usage]:
-    """Pass 1 — analysis with web search. The expensive call."""
+    """Pass 1 — analysis with web search. The expensive call.
+
+    Loops on stop_reason "pause_turn": the server-side search loop pauses when
+    it hits its iteration cap, and the turn only completes once the
+    conversation is re-sent. See MAX_CONTINUATIONS above.
+    """
     prompt = load_prompt("research").replace(
         "{market_data_json}", json.dumps(market_data, indent=2)
     )
+    tools = [{
+        "type": WEB_SEARCH_TOOL_TYPE,
+        "name": "web_search",
+        "max_uses": MAX_SEARCHES,
+        "user_location": {
+            "type": "approximate",
+            "city": "New York",
+            "region": "New York",
+            "country": "US",
+            "timezone": "America/New_York",
+        },
+    }]
 
-    response = client.messages.create(
-        model=RESEARCH_MODEL,
-        max_tokens=RESEARCH_MAX_TOKENS,
-        messages=[{"role": "user", "content": prompt}],
-        tools=[{
-            "type": WEB_SEARCH_TOOL_TYPE,
-            "name": "web_search",
-            "max_uses": MAX_SEARCHES,
-            "user_location": {
-                "type": "approximate",
-                "city": "New York",
-                "region": "New York",
-                "country": "US",
-                "timezone": "America/New_York",
-            },
-        }],
-    )
+    messages = [{"role": "user", "content": prompt}]
+    usage = Usage(model=RESEARCH_MODEL, pass_name="research")
+    parts: list[str] = []
+    response = None
 
-    if response.stop_reason == "refusal":
-        raise SystemExit("Pass 1 was refused by safety classifiers; nothing published.")
+    for round_number in range(MAX_CONTINUATIONS + 1):
+        response = client.messages.create(
+            model=RESEARCH_MODEL,
+            max_tokens=RESEARCH_MAX_TOKENS,
+            messages=messages,
+            tools=tools,
+        )
+        usage.add(response, RESEARCH_MODEL)
 
-    report = _text_of(response)
+        if response.stop_reason == "refusal":
+            raise SystemExit(
+                "Pass 1 was refused by safety classifiers; nothing published.")
+
+        chunk = _text_of(response)
+        if chunk:
+            parts.append(chunk)
+
+        if response.stop_reason != "pause_turn":
+            break
+
+        # Re-send with the paused turn appended; the server resumes from there.
+        messages = messages + [{"role": "assistant", "content": response.content}]
+        log.info("Pass 1 paused after search round %d — continuing (%d searches so far)",
+                 round_number + 1, usage.searches)
+    else:
+        raise SystemExit(
+            f"Pass 1 still paused after {MAX_CONTINUATIONS} continuations "
+            f"and {usage.searches} searches; nothing published.")
+
+    report = "\n".join(parts).strip()
     if not report:
-        raise SystemExit("Pass 1 returned no text blocks.")
-    return report, _usage_of(response, RESEARCH_MODEL, "research")
+        raise SystemExit(
+            f"Pass 1 produced no text (stop_reason={response.stop_reason!r}, "
+            f"{usage.searches} searches, {usage.output_tokens} output tokens).")
+    return report, usage
 
 
 def run_script(client, report: str) -> tuple[str, Usage]:
