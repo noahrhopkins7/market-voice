@@ -107,3 +107,21 @@ def test_refusal_still_aborts(market_data):
     with pytest.raises(SystemExit) as excinfo:
         generate.run_research(client, market_data)
     assert "refused" in str(excinfo.value)
+
+
+def test_state_path_is_shared_by_writer_and_reader():
+    """The writer and reader must derive the state path from one place.
+
+    They disagreed until 2026-08-21 — writer at the branch root, reader under
+    /f/<token>/ — so the reader always 404'd, always saw zero attempts, and the
+    daily cap silently never fired.
+    """
+    import inspect
+
+    from src import run
+    from src.publish import state_relpath
+
+    assert state_relpath("TOK") == "f/TOK/state.json"
+    source = inspect.getsource(run.attempts_today)
+    assert "state_relpath" in source, "reader must not hardcode the path"
+    assert '"state.json"' not in source, "reader must not build its own path"

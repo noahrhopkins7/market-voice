@@ -51,6 +51,18 @@ PRUNE_DAYS = 14
 GH_PAGES_BRANCH = "gh-pages"
 
 
+def state_relpath(token: str) -> str:
+    """Where run state lives on gh-pages, relative to the site root.
+
+    Must agree with run.attempts_today, which reads it over HTTP. They did not
+    agree until 2026-08-21: this was written to the branch root while the
+    reader looked under /f/<token>/, so the reader always saw a 404, always
+    read zero attempts, and the daily cap never fired — 5 attempts ran on both
+    08-19 and 08-20 against a cap of 2. Both sides now derive the path here.
+    """
+    return f"f/{token}/state.json"
+
+
 # --------------------------------------------------------------------------
 # minimal markdown -> HTML
 # --------------------------------------------------------------------------
@@ -336,17 +348,26 @@ def _mutate_state(config: dict, mutate) -> None:
             log.warning("cannot reach %s; state not updated", GH_PAGES_BRANCH)
             return
         try:
-            state_path = worktree / "state.json"
+            state_path = worktree / state_relpath(config["token"])
+            state_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Carry forward anything the old root-level file holds, then retire
+            # it so there is exactly one state file.
+            legacy = worktree / "state.json"
             state = {}
-            if state_path.exists():
-                try:
-                    state = json.loads(state_path.read_text())
-                except ValueError:
-                    pass
+            for candidate in (legacy, state_path):
+                if candidate.exists():
+                    try:
+                        state = json.loads(candidate.read_text())
+                    except ValueError:
+                        pass
+            if legacy.exists():
+                legacy.unlink()
+
             mutate(state)
             state_path.write_text(json.dumps(state, indent=2))
 
-            _run_git("add", "state.json", cwd=worktree)
+            _run_git("add", "-A", cwd=worktree)
             if _run_git("status", "--porcelain", cwd=worktree):
                 _run_git("commit", "-m", "update run state", cwd=worktree)
                 _run_git("push", "origin", f"HEAD:{GH_PAGES_BRANCH}", cwd=worktree)

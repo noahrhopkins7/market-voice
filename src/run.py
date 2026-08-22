@@ -76,8 +76,12 @@ def attempts_today(trading_day: str) -> int:
     feed_dir = _feed_dir_url()
     if not feed_dir:
         return 0
+    from .publish import state_relpath
+
+    import os as _os
+    url = f"{_os.getenv('FEED_BASE_URL').rstrip('/')}/{state_relpath(_os.getenv('FEED_TOKEN'))}"
     try:
-        with urllib.request.urlopen(f"{feed_dir}/state.json", timeout=15) as r:
+        with urllib.request.urlopen(url, timeout=15) as r:
             return _json.loads(r.read().decode()).get("attempts", {}).get(trading_day, 0)
     except Exception:  # noqa: BLE001 - absent state.json is the normal first run
         return 0
