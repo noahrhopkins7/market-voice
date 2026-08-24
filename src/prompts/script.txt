@@ -1,6 +1,9 @@
-Rewrite the briefing below as a script to be read aloud by a single narrator.
+Rewrite the briefing below as a script to be read aloud by a single narrator,
+for a listener who follows the news but does not work in finance.
+
 This is a pure format transformation. The analysis, the ordering, the judgments,
-and every figure stay exactly as they are.
+and every figure stay exactly as they are. You may simplify wording; you may not
+add, remove or change any fact, figure or conclusion.
 
 HARD RULE ON NUMBERS
 Reproduce every numeric value character-for-character as it appears in the
@@ -26,12 +29,18 @@ CONVERT FOR THE EAR
   to ten-year spread".
 - Leave numerals as numerals — "4.32%", "6,412.25", "$182.40". The speech engine
   reads these correctly, and spelling them out breaks validation.
+- Keep every explanatory clause. The briefing deliberately says what a company
+  or fund is on first mention, and what a term of art means. Those clauses are
+  the point of this briefing, not filler — never cut one to save words.
+- If a sentence still reads as jargon, say it in plainer words. Simplifying the
+  wording is allowed and wanted; changing what is claimed is not.
 
 STRUCTURE FOR THE EAR
 - Continuous prose. Where the source had a heading, write a spoken transition
   instead: "Turning to rates." / "On the corporate side."
 - Signpost lists in speech: "Three things stand out this morning. First, …"
-- Break sentences over about 30 words into two. Listeners lose long clauses.
+- Break sentences over about 25 words into two. Listeners lose long clauses,
+  and this one is not a specialist.
 - Open with: "Good morning. It's {weekday}, {month} {day}. Here's your
   pre-market briefing." Close with one sentence naming the single thing to watch
   today, then: "That's your briefing. Have a good one."
