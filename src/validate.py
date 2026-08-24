@@ -39,6 +39,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
+from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -236,15 +237,38 @@ def entity_names(market_data: dict) -> list[str]:
 
     walk(market_data)
 
+    # A script rarely quotes a name in full. The data says "Nasdaq 100 futures";
+    # a narrator says "the Nasdaq 100". Without the shorter form the 100 is
+    # extracted as an unsourced figure — which is exactly what broke the
+    # 2026-08-24 briefing. So also emit every prefix ending on a digit-bearing
+    # token: "S&P 500 futures" -> "S&P 500", "Russell 2000 futures" ->
+    # "Russell 2000".
+    expanded: set[str] = set()
+    for name in names:
+        expanded.add(name)
+        tokens = name.split()
+        for index, token in enumerate(tokens):
+            if any(character.isdigit() for character in token):
+                expanded.add(" ".join(tokens[:index + 1]))
+
     # Longest first, so "S&P 500 futures" masks before "S&P 500".
-    return sorted(names, key=len, reverse=True)
+    return sorted(expanded, key=len, reverse=True)
+
+
+@lru_cache(maxsize=512)
+def _name_pattern(name: str) -> re.Pattern:
+    """Match a name tolerating spacing and hyphenation: "Nasdaq-100" too."""
+    parts = [re.escape(token) for token in name.split()]
+    return re.compile(r"(?<!\w)" + r"[\s\-]+".join(parts) + r"(?!\w)", re.IGNORECASE)
 
 
 def mask_entities(line: str, names: list[str]) -> str:
     """Blank the digits inside entity names, preserving length and offsets."""
     for name in names:
-        if name and name in line:
-            line = line.replace(name, re.sub(r"\d", "#", name))
+        if not name:
+            continue
+        line = _name_pattern(name).sub(
+            lambda match: re.sub(r"\d", "#", match.group()), line)
     return line
 
 

@@ -225,3 +225,44 @@ def test_bare_ticker_prices_are_still_checked(market_data):
     """A figure-shaped token in prose is checked even without a % or $ marker."""
     result = validate("The index printed 9,999.99 overnight.", market_data)
     assert not result.ok
+
+
+def _without_incidental_100(market_data):
+    """A copy where no display string happens to contain 100.
+
+    On 2026-08-13 the dollar index printed 100.00 and a $100 billion auction
+    was scheduled, so "100" was allowed by coincidence and the bug stayed
+    hidden. On 2026-08-24 neither existed and the briefing failed.
+    """
+    import copy
+
+    stripped = copy.deepcopy(market_data)
+    for row in stripped["fx"]:
+        if row["symbol"] == "DX-Y.NYB":
+            row["last"] = {"value": 99.4, "display": "99.40"}
+    stripped["calendar"]["treasury_auctions"] = []
+    return stripped
+
+
+def test_index_name_shortened_by_the_narrator_is_not_a_figure(market_data):
+    """The 2026-08-24 production failure.
+
+    The data says "Nasdaq 100 futures"; a narrator says "the Nasdaq 100".
+    Masking only matched the full name, so the 100 was read as an unsourced
+    figure and the briefing was withheld.
+    """
+    stripped = _without_incidental_100(market_data)
+    assert "100" not in collect_allowed(stripped), "probe is invalid if 100 is allowed"
+    for phrasing in ("The Nasdaq 100 is higher this morning.",
+                     "The Nasdaq-100 led the tape.",
+                     "The FTSE 100 slipped.",
+                     "Russell 2000 futures rose, and the Russell 2000 followed."):
+        assert validate(phrasing, stripped).ok, phrasing
+
+
+def test_shortened_names_do_not_whitelist_the_bare_number(market_data):
+    """Masking a name must not make its digits legal everywhere else."""
+    stripped = _without_incidental_100(market_data)
+    result = validate("Some 100 stocks advanced on the day.", stripped)
+    assert not result.ok
+    assert any(v.raw == "100" for v in result.violations), raw_tokens(result)
