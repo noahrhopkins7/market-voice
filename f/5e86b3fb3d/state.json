@@ -7,8 +7,8 @@
     "2026-08-25": 1
   },
   "last_failure": {
-    "trading_day": "2026-08-24",
-    "at_utc": "2026-08-24T09:50:46Z",
-    "reason": "validation failed twice; rejected figures: 100"
+    "trading_day": "2026-08-25",
+    "at_utc": "2026-08-25T09:39:27Z",
+    "reason": "validation failed twice; rejected figures: 500"
   }
 }
